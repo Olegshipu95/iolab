@@ -2,7 +2,10 @@
 
 **Название:** "Разработка драйверов символьных устройств"
 
-**Цель работы:** ...
+**Цель работы:** 
+Написать драйвер символьного устройства, удовлетворяющий требованиям:  
+1.1 Драйвер должен создавать символьное устройство /dev/varN, где N – это номер варианта.  
+1.2 Должен обрабатывать операции записи и чтения в соответствии с вариантом задания (Читать в описании функциональности драйвера).
 
 ## Описание функциональности драйвера
 
@@ -15,18 +18,17 @@ make
 
 ## Инструкция пользователя
 
-sudo insmod ch_drv.ko
-echo "1234" | sudo tee \dev\var6
-cat \dev\var6
+sudo insmod ch_drv.ko  
+echo "1234" | sudo tee \dev\var6  
+cat \dev\var6  
 sudo rmmod ch_drv
 
 ## Примеры использования
 
-oleg@oleg-VirtualBox:~/newrep/lab1$ sudo rmmod ch_drv
-oleg@oleg-VirtualBox:~/newrep/lab1$ sudo insmod ch_drv.ko
-oleg@oleg-VirtualBox:~/newrep/lab1$ 
-oleg@oleg-VirtualBox:~/newrep/lab1$ echo "1234" | sudo tee /dev/var6 
-1234
-oleg@oleg-VirtualBox:~/newrep/lab1$ sudo cat /dev/var6 
-Digits count: 4
+$ sudo rmmod ch_drv  
+$ sudo insmod ch_drv.ko  
+$ echo "1234" | sudo tee /dev/var6  
+1234  
+$ sudo cat /dev/var6   
+Digits count: 4  
 
