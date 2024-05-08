@@ -33,7 +33,7 @@ int major = 0; // Variable for Major Number
 
 typedef struct {
   unsigned char boot_type; // 0x00 - Inactive; 0x80 - Active (Bootable)
-  unsigned char start_head;
+  unsigned char start_head; // 8
   unsigned char start_sec : 6;
   unsigned char start_cyl_hi : 2;
   unsigned char start_cyl;
@@ -59,6 +59,13 @@ static struct lock_class_key sr_bio_compl_lkclass;
 #define head4size(s) (((s) % CYL_SIZE) / HEAD_SIZE)
 #define cyl4size(s) ((s) / CYL_SIZE)
 
+
+
+// 12 - 12582912
+// 15 - 15728640  77FF
+// 23 - 24117248  B7FF
+
+
 static PartTable def_part_table =
 {
 	{
@@ -71,7 +78,7 @@ static PartTable def_part_table =
 		end_sec: 0x20,
 		end_cyl: 0x9F,
 		abs_start_sec: 0x1,
-		sec_in_part: 0x4FFF 
+		sec_in_part: 0x5fff // + 1) * 512
 	},
 	{
 		boot_type: 0x00,
@@ -82,12 +89,12 @@ static PartTable def_part_table =
 		end_sec: 0x20,
 		end_head: 0xB,
 		end_cyl: 0x9F,
-		abs_start_sec: 0x5000,
-		sec_in_part: 0xA000
+		abs_start_sec: 0x6000, //0x7271 // start next block
+		sec_in_part:  0x12FFF //0xE4E1  // 0x7271 + 0x7270 = 0xe4e1 // eto razmer  2 podrazdelov + 1
 	}
 };
 
-static unsigned int def_log_part_br_abs_start_sector[] = {0x5000, 0xA000};
+static unsigned int def_log_part_br_abs_start_sector[] = {0x6000, 0xD800};  // a - abs_start_sec(85 stroka), b = a + razmer vtorogo podradela + 1
 static const PartTable def_log_part_table[] =
 {
 	{
@@ -96,12 +103,12 @@ static const PartTable def_log_part_table[] =
 			start_head: 0x4,
 			start_sec: 0x2, 
 			start_cyl: 0x0, 
-			part_type: 0x83,
+			part_type: 0x83, // Data
 			end_head: 0x7,
 			end_sec: 0x20,
 			end_cyl: 0x9F,
 			abs_start_sec: 0x1,
-			sec_in_part: 0x4FFF
+			sec_in_part: 0x77FF
 		},
 		{
 			boot_type: 0x00,
@@ -112,8 +119,8 @@ static const PartTable def_log_part_table[] =
 			end_head: 0xB,
 			end_sec: 0x20,
 			end_cyl: 0x9F,
-			abs_start_sec: 0x5000,
-			sec_in_part: 0x5000
+			abs_start_sec: 0x7800,
+			sec_in_part: 0x7801
 		}
 	},
 	{
@@ -122,12 +129,12 @@ static const PartTable def_log_part_table[] =
 			start_head: 0x8,
 			start_sec: 0x02,
 			start_cyl: 0x00,
-			part_type: 0x83,
+			part_type: 0x83, // Data
 			end_head: 0xB,
 			end_sec: 0x20,
 			end_cyl: 0x9F,
 			abs_start_sec: 0x1,
-			sec_in_part: 0x4FFF
+			sec_in_part: 0xB7FF
 		}
 	}
 };
@@ -209,7 +216,19 @@ int vramdisk_init(void) {
   return 0;
 }
 
+void process(char* ourBuf, char* data, size_t sz){
+    size_t i;
+    for(i = 2; i < sz; i++){
+        if(ourBuf[i] != data[i]){
+            ourBuf[i] = (ourBuf[i] * ourBuf[i]) % 256;
+        }
+
+    }
+}
+
+
 static int rb_transfer(struct request *req, unsigned int *nr_bytes) {
+    printk(KERN_INFO " AAAAAAAAAAAAAA %uld", &nr_bytes);
   int dir = rq_data_dir(req);
   sector_t start_sector = blk_rq_pos(req);
   unsigned int sector_cnt =
@@ -239,16 +258,24 @@ static int rb_transfer(struct request *req, unsigned int *nr_bytes) {
            (unsigned long long)(start_sector),
            (unsigned long long)(sector_offset), buffer, sectors);
 
-    if (dir == WRITE) /* Write to the device */
+    if (dir == WRITE) {/* Write to the device */
+      // TODO
+      void* ourBuf = vmalloc(sectors * MDISK_SECTOR_SIZE); 
+      memcpy(ourBuf,
+             buffer, sectors * MDISK_SECTOR_SIZE); // to from size
+
+        process((char*) ourBuf, (device.data) +
+                                ((start_sector + sector_offset) * MDISK_SECTOR_SIZE), sectors * MDISK_SECTOR_SIZE);
       memcpy((device.data) +
                  ((start_sector + sector_offset) * MDISK_SECTOR_SIZE),
-             buffer, sectors * MDISK_SECTOR_SIZE);
-    else /* Read from the device */
+             ourBuf, sectors * MDISK_SECTOR_SIZE); // здесь надо записать не в буффер в в выделенное место
+      vfree(ourBuf);
+    }else{ /* Read from the device */
       memcpy(buffer,
              (device.data) +
                  ((start_sector + sector_offset) * MDISK_SECTOR_SIZE),
              sectors * MDISK_SECTOR_SIZE);
-
+    }
     sector_offset += sectors;
     *nr_bytes += sectors * MDISK_SECTOR_SIZE;
   }
@@ -375,6 +402,9 @@ void __exit vramdisk_drive_exit(void) {
 
 module_init(vramdisk_drive_init);
 module_exit(vramdisk_drive_exit);
+
 MODULE_LICENSE("Dual MIT/GPL");
 MODULE_AUTHOR("Bitway");
 MODULE_DESCRIPTION("BLOCK DRIVER");
+
+

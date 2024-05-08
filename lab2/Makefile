@@ -15,6 +15,3 @@ install: build
 
 remove: clean
 	sudo rmmod lab2
-
-list: install
-	sudo lsmod | grep "^lab2"
