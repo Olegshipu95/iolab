@@ -9,11 +9,11 @@
 
 ## Описание функциональности драйвера
 
-Device         Boot Start    End Sectors Size Id Type
-/dev/vramdisk1          1  24575   24575  12M 83 Linux
-/dev/vramdisk2      24576 102398   77823  38M  5 Extended
-/dev/vramdisk5      24577  55295   30719  15M 83 Linux
-/dev/vramdisk6      55297 102399   47103  23M 83 Linux
+Device         Boot Start    End Sectors Size Id Type  
+/dev/vramdisk1          1  24575   24575  12M 83 Linux  
+/dev/vramdisk2      24576 102398   77823  38M  5 Extended  
+/dev/vramdisk5      24577  55295   30719  15M 83 Linux  
+/dev/vramdisk6      55297 102399   47103  23M 83 Linux  
 
 
 1. Написать драйвер блочного устройства, удовлетворяющий
