@@ -36,14 +36,14 @@ dmesg
 
 ## Примеры использования
 
-root@zc2:~/OlegSh# make  
-root@zc2:~/OlegSh# make load  
-sudo insmod lab3.ko
-root@zc4:~# echo -n "My udp packet bbbbbyyyeraradsfafh;af21sdafasdfasdfdfsahfjkasdfhsadfhafldhakfjdhalskjfdhasdfkadfhslhfdjklsahflahsfjaflashfdljkasfdhkfhdsjkfhsakfhsaj;adfh;sadfhklsadhjlfasdfklsahfjkdshaklfsa" | nc -u -w1 192.168.1.50 22  
-root@zc4:~# echo -n "My udp packet" | nc -u -w1 192.168.1.50 22  
-root@zc4:~# echo -n "My udp packet" | nc -u -w1 192.168.1.50 22  
-root@zc4:~# echo -n "My udp packet bbbbbyyyeraradsfafh;af21sdafasdfasdfdfsahfjkasdfhsadfhafldhakfjdhalskjfdhasdfkadfhslhfdjklsahflahsfjaflashfdljkasfdhkfhdsjkfhsakfhsaj;adfh;sadfhklsadhjlfasdfklsahfjkdshaklfsa" | nc -u -w1 192.168.1.50 22  
-root@zc2:~/OlegSh# dmesg  
+root@zc2:/OlegSh# make  
+root@zc2:/OlegSh# make load  
+sudo insmod lab3.ko  
+root@zc4:# echo -n "My udp packet bbbbbyyyeraradsfafh;af21sdafasdfasdfdfsahfjkasdfhsadfhafldhakfjdhalskjfdhasdfkadfhslhfdjklsahflahsfjaflashfdljkasfdhkfhdsjkfhsakfhsaj;adfh;sadfhklsadhjlfasdfklsahfjkdshaklfsa" | nc -u -w1 192.168.1.50 22  
+root@zc4:# echo -n "My udp packet" | nc -u -w1 192.168.1.50 22  
+root@zc4:# echo -n "My udp packet" | nc -u -w1 192.168.1.50 22  
+root@zc4:# echo -n "My udp packet bbbbbyyyeraradsfafh;af21sdafasdfasdfdfsahfjkasdfhsadfhafldhakfjdhalskjfdhasdfkadfhslhfdjklsahflahsfjaflashfdljkasfdhkfhdsjkfhsakfhsaj;adfh;sadfhklsadhjlfasdfklsahfjkdshaklfsa" | nc -u -w1 192.168.1.50 22  
+root@zc2:/OlegSh# dmesg  
 [ 4423.906649] Captured UDP datagram, saddr: 192.168.1.86[ 4423.906675] daddr: 192.168.1.50  
 [ 4423.906684] Data length: 188. Data:[ 4423.906694] My udp packet bbbbbyyyeraradsfafh;af21sdafasdfasdfdfsahfjkasdfhsadfhafldhakfjdhalskjfdhasdfkadfhslhfdjklsahflahsfjaflashfdljkasfdhkfhdsjkfhsakfhsaj;adfh;sadfhklsadhjlfasdfklsahfjkdshaklfsa  
 [ 4512.722508] Captured UDP datagram, saddr: 192.168.1.86[ 4512.722533] daddr: 192.168.1.50  
