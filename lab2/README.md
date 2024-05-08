@@ -59,7 +59,7 @@ make clean
 
 ## Примеры использования
 
-oleg@oleg-VirtualBox:~/IOLab2$ sudo dd if=testfile of=/dev/vramdisk2 count=1
-1+0 records in
-1+0 records out
-512 bytes copied, 0,000502076 s, 1,0 MB/s
+oleg@oleg-VirtualBox:~/IOLab2$ sudo dd if=testfile of=/dev/vramdisk2 count=1  
+1+0 records in  
+1+0 records out  
+512 bytes copied, 0,000502076 s, 1,0 MB/s  
